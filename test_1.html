@@ -1,0 +1,1183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QA Testing Document - Gaming Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #1e3a8a;
+            --primary-light: #3b82f6;
+            --primary-dark: #1e40af;
+            --accent: #f59e0b;
+            --success: #10b981;
+            --danger: #ef4444;
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --border: #e2e8f0;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --shadow: rgba(0, 0, 0, 0.08);
+        }
+
+        body {
+            font-family: 'Manrope', -apple-system, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: var(--surface);
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 3rem 3rem 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .metadata {
+            background: var(--bg);
+            padding: 2rem 3rem;
+            border-bottom: 2px solid var(--border);
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .metadata-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .metadata-item label {
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .metadata-item input {
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.2s;
+            background: white;
+        }
+
+        .metadata-item input:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .content {
+            padding: 3rem;
+        }
+
+        .section {
+            margin-bottom: 3rem;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section-header {
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            padding: 1.5rem 2rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--primary);
+        }
+
+        .section-header h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .test-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+        }
+
+        .test-table thead {
+            background: var(--primary);
+            color: white;
+        }
+
+        .test-table th {
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .test-table tbody tr {
+            border-bottom: 1px solid var(--border);
+            transition: background 0.2s;
+        }
+
+        .test-table tbody tr:hover {
+            background: var(--bg);
+        }
+
+        .test-table tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        .test-table td {
+            padding: 1rem;
+            vertical-align: top;
+        }
+
+        .test-id {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+            color: var(--primary);
+            background: var(--bg);
+            padding: 0.25rem 0.75rem;
+            border-radius: 6px;
+            display: inline-block;
+        }
+
+        .checkbox-group {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.2s;
+        }
+
+        .checkbox-label:hover {
+            transform: translateX(2px);
+        }
+
+        .checkbox-label input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: var(--primary);
+        }
+
+        .checkbox-label.pass {
+            color: var(--success);
+            font-weight: 600;
+        }
+
+        .checkbox-label.fail {
+            color: var(--danger);
+            font-weight: 600;
+        }
+
+        textarea, input[type="text"] {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            resize: vertical;
+            transition: all 0.2s;
+        }
+
+        textarea:focus, input[type="text"]:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .rating-section {
+            background: var(--bg);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            border: 2px solid var(--border);
+        }
+
+        .rating-section h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .rating-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .rating-option {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .rating-option:hover {
+            transform: scale(1.05);
+        }
+
+        .rating-option input[type="radio"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: var(--primary);
+        }
+
+        .actions {
+            position: sticky;
+            bottom: 0;
+            background: white;
+            padding: 2rem 3rem;
+            border-top: 2px solid var(--border);
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            box-shadow: 0 -4px 20px var(--shadow);
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            box-shadow: 0 4px 14px rgba(30, 58, 138, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(30, 58, 138, 0.5);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success) 0%, #059669 100%);
+            color: white;
+            box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.5);
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .toast {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            background: var(--success);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            opacity: 0;
+            transform: translateY(-100px);
+            transition: all 0.3s;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .bugs-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .bugs-table th {
+            background: #dc2626;
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+        }
+
+        .bugs-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .bugs-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .recommendations-section {
+            margin-bottom: 2rem;
+        }
+
+        .priority-header {
+            background: var(--primary);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .priority-header.medium {
+            background: var(--accent);
+        }
+
+        .priority-header.low {
+            background: var(--text-light);
+        }
+
+        .recommendation-input {
+            margin-bottom: 0.75rem;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .container {
+                box-shadow: none;
+                border-radius: 0;
+            }
+            .actions {
+                display: none;
+            }
+            .toast {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            .content, .metadata, .actions {
+                padding: 1.5rem;
+            }
+            .test-table {
+                font-size: 0.875rem;
+            }
+            .actions {
+                flex-direction: column;
+            }
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>QA Testing Document</h1>
+            <p>Competitive Exam Gaming Platform - Comprehensive Quality Assurance</p>
+        </div>
+
+        <div class="metadata">
+            <div class="metadata-item">
+                <label>Platform Name</label>
+                <input type="text" id="platformName" placeholder="Enter platform name">
+            </div>
+            <div class="metadata-item">
+                <label>Version/Build</label>
+                <input type="text" id="version" placeholder="e.g., v1.0.0">
+            </div>
+            <div class="metadata-item">
+                <label>Testing Date</label>
+                <input type="date" id="testingDate">
+            </div>
+            <div class="metadata-item">
+                <label>Tester Name</label>
+                <input type="text" id="testerName" placeholder="Your name">
+            </div>
+            <div class="metadata-item">
+                <label>Browser Used</label>
+                <input type="text" id="browser" placeholder="e.g., Chrome 120">
+            </div>
+            <div class="metadata-item">
+                <label>OS/Device</label>
+                <input type="text" id="osDevice" placeholder="e.g., Windows 11">
+            </div>
+        </div>
+
+        <div class="content" id="content">
+            <!-- Section 1: Authentication -->
+            <div class="section">
+                <div class="section-header">
+                    <h2>1. User Authentication & Registration</h2>
+                </div>
+                <table class="test-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 8%">ID</th>
+                            <th style="width: 25%">Description</th>
+                            <th style="width: 25%">Expected Result</th>
+                            <th style="width: 15%">Status</th>
+                            <th style="width: 27%">Notes/Issues</th>
+                        </tr>
+                    </thead>
+                    <tbody id="auth-tests">
+                    </tbody>
+                </table>
+                <div class="rating-section">
+                    <h3>Overall Section Rating</h3>
+                    <div class="rating-options">
+                        <label class="rating-option"><input type="radio" name="auth-rating" value="excellent"> Excellent</label>
+                        <label class="rating-option"><input type="radio" name="auth-rating" value="good"> Good</label>
+                        <label class="rating-option"><input type="radio" name="auth-rating" value="needs-improvement"> Needs Improvement</label>
+                        <label class="rating-option"><input type="radio" name="auth-rating" value="critical"> Critical Issues</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 2: UI & Navigation -->
+            <div class="section">
+                <div class="section-header">
+                    <h2>2. User Interface & Navigation</h2>
+                </div>
+                <table class="test-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 8%">ID</th>
+                            <th style="width: 25%">Description</th>
+                            <th style="width: 25%">Expected Result</th>
+                            <th style="width: 15%">Status</th>
+                            <th style="width: 27%">Notes/Issues</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ui-tests">
+                    </tbody>
+                </table>
+                <div class="rating-section">
+                    <h3>Overall Section Rating</h3>
+                    <div class="rating-options">
+                        <label class="rating-option"><input type="radio" name="ui-rating" value="excellent"> Excellent</label>
+                        <label class="rating-option"><input type="radio" name="ui-rating" value="good"> Good</label>
+                        <label class="rating-option"><input type="radio" name="ui-rating" value="needs-improvement"> Needs Improvement</label>
+                        <label class="rating-option"><input type="radio" name="ui-rating" value="critical"> Critical Issues</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 3: Game Functionality -->
+            <div class="section">
+                <div class="section-header">
+                    <h2>3. Game Functionality</h2>
+                </div>
+                <table class="test-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 8%">ID</th>
+                            <th style="width: 25%">Description</th>
+                            <th style="width: 25%">Expected Result</th>
+                            <th style="width: 15%">Status</th>
+                            <th style="width: 27%">Notes/Issues</th>
+                        </tr>
+                    </thead>
+                    <tbody id="game-tests">
+                    </tbody>
+                </table>
+                <div class="rating-section">
+                    <h3>Overall Section Rating</h3>
+                    <div class="rating-options">
+                        <label class="rating-option"><input type="radio" name="game-rating" value="excellent"> Excellent</label>
+                        <label class="rating-option"><input type="radio" name="game-rating" value="good"> Good</label>
+                        <label class="rating-option"><input type="radio" name="game-rating" value="needs-improvement"> Needs Improvement</label>
+                        <label class="rating-option"><input type="radio" name="game-rating" value="critical"> Critical Issues</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 4: Learning Content -->
+            <div class="section">
+                <div class="section-header">
+                    <h2>4. Learning Content Integration</h2>
+                </div>
+                <table class="test-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 8%">ID</th>
+                            <th style="width: 25%">Description</th>
+                            <th style="width: 25%">Expected Result</th>
+                            <th style="width: 15%">Status</th>
+                            <th style="width: 27%">Notes/Issues</th>
+                        </tr>
+                    </thead>
+                    <tbody id="learning-tests">
+                    </tbody>
+                </table>
+                <div class="rating-section">
+                    <h3>Overall Section Rating</h3>
+                    <div class="rating-options">
+                        <label class="rating-option"><input type="radio" name="learning-rating" value="excellent"> Excellent</label>
+                        <label class="rating-option"><input type="radio" name="learning-rating" value="good"> Good</label>
+                        <label class="rating-option"><input type="radio" name="learning-rating" value="needs-improvement"> Needs Improvement</label>
+                        <label class="rating-option"><input type="radio" name="learning-rating" value="critical"> Critical Issues</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 5: Competitive Features -->
+            <div class="section">
+                <div class="section-header">
+                    <h2>5. Competitive Features</h2>
+                </div>
+                <table class="test-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 8%">ID</th>
+                            <th style="width: 25%">Description</th>
+                            <th style="width: 25%">Expected Result</th>
+                            <th style="width: 15%">Status</th>
+                            <th style="width: 27%">Notes/Issues</th>
+                        </tr>
+                    </thead>
+                    <tbody id="competitive-tests">
+                    </tbody>
+                </table>
+                <div class="rating-section">
+                    <h3>Overall Section Rating</h3>
+                    <div class="rating-options">
+                        <label class="rating-option"><input type="radio" name="competitive-rating" value="excellent"> Excellent</label>
+                        <label class="rating-option"><input type="radio" name="competitive-rating" value="good"> Good</label>
+                        <label class="rating-option"><input type="radio" name="competitive-rating" value="needs-improvement"> Needs Improvement</label>
+                        <label class="rating-option"><input type="radio" name="competitive-rating" value="critical"> Critical Issues</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 6: User Profile -->
+            <div class="section">
+                <div class="section-header">
+                    <h2>6. User Profile & Progress Tracking</h2>
+                </div>
+                <table class="test-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 8%">ID</th>
+                            <th style="width: 25%">Description</th>
+                            <th style="width: 25%">Expected Result</th>
+                            <th style="width: 15%">Status</th>
+                            <th style="width: 27%">Notes/Issues</th>
+                        </tr>
+                    </thead>
+                    <tbody id="profile-tests">
+                    </tbody>
+                </table>
+                <div class="rating-section">
+                    <h3>Overall Section Rating</h3>
+                    <div class="rating-options">
+                        <label class="rating-option"><input type="radio" name="profile-rating" value="excellent"> Excellent</label>
+                        <label class="rating-option"><input type="radio" name="profile-rating" value="good"> Good</label>
+                        <label class="rating-option"><input type="radio" name="profile-rating" value="needs-improvement"> Needs Improvement</label>
+                        <label class="rating-option"><input type="radio" name="profile-rating" value="critical"> Critical Issues</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 7: Performance -->
+            <div class="section">
+                <div class="section-header">
+                    <h2>7. Performance & Optimization</h2>
+                </div>
+                <table class="test-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 8%">ID</th>
+                            <th style="width: 25%">Description</th>
+                            <th style="width: 25%">Expected Result</th>
+                            <th style="width: 15%">Status</th>
+                            <th style="width: 27%">Notes/Issues</th>
+                        </tr>
+                    </thead>
+                    <tbody id="performance-tests">
+                    </tbody>
+                </table>
+                <div class="rating-section">
+                    <h3>Overall Section Rating</h3>
+                    <div class="rating-options">
+                        <label class="rating-option"><input type="radio" name="performance-rating" value="excellent"> Excellent</label>
+                        <label class="rating-option"><input type="radio" name="performance-rating" value="good"> Good</label>
+                        <label class="rating-option"><input type="radio" name="performance-rating" value="needs-improvement"> Needs Improvement</label>
+                        <label class="rating-option"><input type="radio" name="performance-rating" value="critical"> Critical Issues</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 8: Security -->
+            <div class="section">
+                <div class="section-header">
+                    <h2>8. Security & Data Privacy</h2>
+                </div>
+                <table class="test-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 8%">ID</th>
+                            <th style="width: 25%">Description</th>
+                            <th style="width: 25%">Expected Result</th>
+                            <th style="width: 15%">Status</th>
+                            <th style="width: 27%">Notes/Issues</th>
+                        </tr>
+                    </thead>
+                    <tbody id="security-tests">
+                    </tbody>
+                </table>
+                <div class="rating-section">
+                    <h3>Overall Section Rating</h3>
+                    <div class="rating-options">
+                        <label class="rating-option"><input type="radio" name="security-rating" value="excellent"> Excellent</label>
+                        <label class="rating-option"><input type="radio" name="security-rating" value="good"> Good</label>
+                        <label class="rating-option"><input type="radio" name="security-rating" value="needs-improvement"> Needs Improvement</label>
+                        <label class="rating-option"><input type="radio" name="security-rating" value="critical"> Critical Issues</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Critical Bugs Section -->
+            <div class="section">
+                <div class="section-header">
+                    <h2>Critical Bugs Identified</h2>
+                </div>
+                <table class="bugs-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 8%">Bug ID</th>
+                            <th style="width: 15%">Severity</th>
+                            <th style="width: 30%">Description</th>
+                            <th style="width: 30%">Steps to Reproduce</th>
+                            <th style="width: 17%">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="test-id">1</span></td>
+                            <td><input type="text" placeholder="Critical/High/Medium/Low"></td>
+                            <td><textarea rows="2" placeholder="Bug description..."></textarea></td>
+                            <td><textarea rows="2" placeholder="Steps to reproduce..."></textarea></td>
+                            <td><input type="text" placeholder="Open/Fixed/In Progress"></td>
+                        </tr>
+                        <tr>
+                            <td><span class="test-id">2</span></td>
+                            <td><input type="text" placeholder="Critical/High/Medium/Low"></td>
+                            <td><textarea rows="2" placeholder="Bug description..."></textarea></td>
+                            <td><textarea rows="2" placeholder="Steps to reproduce..."></textarea></td>
+                            <td><input type="text" placeholder="Open/Fixed/In Progress"></td>
+                        </tr>
+                        <tr>
+                            <td><span class="test-id">3</span></td>
+                            <td><input type="text" placeholder="Critical/High/Medium/Low"></td>
+                            <td><textarea rows="2" placeholder="Bug description..."></textarea></td>
+                            <td><textarea rows="2" placeholder="Steps to reproduce..."></textarea></td>
+                            <td><input type="text" placeholder="Open/Fixed/In Progress"></td>
+                        </tr>
+                        <tr>
+                            <td><span class="test-id">4</span></td>
+                            <td><input type="text" placeholder="Critical/High/Medium/Low"></td>
+                            <td><textarea rows="2" placeholder="Bug description..."></textarea></td>
+                            <td><textarea rows="2" placeholder="Steps to reproduce..."></textarea></td>
+                            <td><input type="text" placeholder="Open/Fixed/In Progress"></td>
+                        </tr>
+                        <tr>
+                            <td><span class="test-id">5</span></td>
+                            <td><input type="text" placeholder="Critical/High/Medium/Low"></td>
+                            <td><textarea rows="2" placeholder="Bug description..."></textarea></td>
+                            <td><textarea rows="2" placeholder="Steps to reproduce..."></textarea></td>
+                            <td><input type="text" placeholder="Open/Fixed/In Progress"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Recommendations Section -->
+            <div class="section recommendations-section">
+                <div class="section-header">
+                    <h2>Recommendations & Suggestions</h2>
+                </div>
+                
+                <div class="priority-header">High Priority</div>
+                <div class="recommendation-input"><textarea rows="2" placeholder="High priority recommendation 1..."></textarea></div>
+                <div class="recommendation-input"><textarea rows="2" placeholder="High priority recommendation 2..."></textarea></div>
+                <div class="recommendation-input"><textarea rows="2" placeholder="High priority recommendation 3..."></textarea></div>
+                
+                <div class="priority-header medium">Medium Priority</div>
+                <div class="recommendation-input"><textarea rows="2" placeholder="Medium priority recommendation 1..."></textarea></div>
+                <div class="recommendation-input"><textarea rows="2" placeholder="Medium priority recommendation 2..."></textarea></div>
+                <div class="recommendation-input"><textarea rows="2" placeholder="Medium priority recommendation 3..."></textarea></div>
+                
+                <div class="priority-header low">Low Priority / Nice to Have</div>
+                <div class="recommendation-input"><textarea rows="2" placeholder="Low priority recommendation 1..."></textarea></div>
+                <div class="recommendation-input"><textarea rows="2" placeholder="Low priority recommendation 2..."></textarea></div>
+                <div class="recommendation-input"><textarea rows="2" placeholder="Low priority recommendation 3..."></textarea></div>
+            </div>
+
+            <!-- Overall Assessment -->
+            <div class="section">
+                <div class="section-header">
+                    <h2>Overall Assessment</h2>
+                </div>
+                <div class="rating-section">
+                    <h3>Overall Platform Rating</h3>
+                    <div class="rating-options">
+                        <label class="rating-option"><input type="radio" name="overall-rating" value="excellent"> Excellent</label>
+                        <label class="rating-option"><input type="radio" name="overall-rating" value="good"> Good</label>
+                        <label class="rating-option"><input type="radio" name="overall-rating" value="satisfactory"> Satisfactory</label>
+                        <label class="rating-option"><input type="radio" name="overall-rating" value="needs-major"> Needs Major Improvements</label>
+                        <label class="rating-option"><input type="radio" name="overall-rating" value="critical"> Critical Issues</label>
+                    </div>
+                </div>
+
+                <div class="rating-section">
+                    <h3>Ready for Production?</h3>
+                    <div class="rating-options">
+                        <label class="rating-option"><input type="radio" name="production-ready" value="yes"> Yes</label>
+                        <label class="rating-option"><input type="radio" name="production-ready" value="yes-minor"> Yes, with minor fixes</label>
+                        <label class="rating-option"><input type="radio" name="production-ready" value="no"> No, needs significant work</label>
+                    </div>
+                </div>
+
+                <div class="rating-section">
+                    <h3>Key Strengths</h3>
+                    <textarea rows="4" placeholder="List the key strengths of the platform..."></textarea>
+                </div>
+
+                <div class="rating-section">
+                    <h3>Key Areas for Improvement</h3>
+                    <textarea rows="4" placeholder="List the key areas that need improvement..."></textarea>
+                </div>
+
+                <div class="rating-section">
+                    <h3>Additional Notes & Observations</h3>
+                    <textarea rows="6" placeholder="Any additional notes, observations, or comments..."></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="actions">
+            <button class="btn btn-primary" onclick="saveData()">💾 Auto-Save Progress</button>
+            <button class="btn btn-success" onclick="exportToJSON()">📥 Export as JSON</button>
+            <button class="btn btn-secondary" onclick="window.print()">🖨️ Print Document</button>
+            <button class="btn btn-secondary" onclick="clearAll()">🗑️ Clear All Data</button>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">Data saved successfully!</div>
+
+    <script>
+        const testData = {
+            auth: [
+                { id: '1.1', desc: 'User Registration - Valid data', expected: 'Account created successfully' },
+                { id: '1.2', desc: 'User Registration - Invalid email', expected: 'Error message displayed' },
+                { id: '1.3', desc: 'User Registration - Duplicate email', expected: 'Appropriate error shown' },
+                { id: '1.4', desc: 'Login - Valid credentials', expected: 'Successfully logged in' },
+                { id: '1.5', desc: 'Login - Invalid credentials', expected: 'Error message displayed' },
+                { id: '1.6', desc: 'Password reset functionality', expected: 'Reset link sent and works' },
+                { id: '1.7', desc: 'Session management', expected: 'User stays logged in appropriately' },
+                { id: '1.8', desc: 'Logout functionality', expected: 'User successfully logged out' }
+            ],
+            ui: [
+                { id: '2.1', desc: 'Homepage loading', expected: 'Loads within 3 seconds' },
+                { id: '2.2', desc: 'Navigation menu', expected: 'All links functional' },
+                { id: '2.3', desc: 'Responsive design - Mobile', expected: 'UI adapts correctly' },
+                { id: '2.4', desc: 'Responsive design - Tablet', expected: 'UI adapts correctly' },
+                { id: '2.5', desc: 'Responsive design - Desktop', expected: 'UI displays properly' },
+                { id: '2.6', desc: 'Button functionality', expected: 'All buttons work as intended' },
+                { id: '2.7', desc: 'Visual consistency', expected: 'Consistent theme/branding' },
+                { id: '2.8', desc: 'Loading indicators', expected: 'Shown during data fetch' },
+                { id: '2.9', desc: 'Error pages (404, 500)', expected: 'Proper error pages displayed' },
+                { id: '2.10', desc: 'Accessibility features', expected: 'ARIA labels, keyboard navigation' }
+            ],
+            game: [
+                { id: '3.1', desc: 'Game listing/catalog', expected: 'All games displayed correctly' },
+                { id: '3.2', desc: 'Game selection', expected: 'Game loads properly' },
+                { id: '3.3', desc: 'Game instructions', expected: 'Clear and accessible' },
+                { id: '3.4', desc: 'Game controls', expected: 'Responsive and functional' },
+                { id: '3.5', desc: 'Game progression', expected: 'Levels/stages advance correctly' },
+                { id: '3.6', desc: 'Pause/Resume functionality', expected: 'Works without data loss' },
+                { id: '3.7', desc: 'Game exit/quit', expected: 'Properly saves progress' },
+                { id: '3.8', desc: 'Audio/Sound effects', expected: 'Working and can be muted' },
+                { id: '3.9', desc: 'Graphics/Animations', expected: 'Smooth, no lag or glitches' },
+                { id: '3.10', desc: 'Timer functionality', expected: 'Accurate time tracking' }
+            ],
+            learning: [
+                { id: '4.1', desc: 'Educational content display', expected: 'Content clear and readable' },
+                { id: '4.2', desc: 'Questions presentation', expected: 'Properly formatted' },
+                { id: '4.3', desc: 'Multiple choice options', expected: 'All options visible and selectable' },
+                { id: '4.4', desc: 'Answer submission', expected: 'Responses recorded correctly' },
+                { id: '4.5', desc: 'Answer validation', expected: 'Correct/incorrect shown accurately' },
+                { id: '4.6', desc: 'Explanation/Solutions', expected: 'Displayed after answer' },
+                { id: '4.7', desc: 'Content categorization', expected: 'Proper subject/topic tagging' },
+                { id: '4.8', desc: 'Difficulty levels', expected: 'Appropriate challenge progression' },
+                { id: '4.9', desc: 'Multimedia content', expected: 'Images, videos load properly' },
+                { id: '4.10', desc: 'Content accuracy', expected: 'No errors in questions/answers' }
+            ],
+            competitive: [
+                { id: '5.1', desc: 'Leaderboard display', expected: 'Shows rankings correctly' },
+                { id: '5.2', desc: 'Score calculation', expected: 'Accurate scoring system' },
+                { id: '5.3', desc: 'Real-time updates', expected: 'Scores update live' },
+                { id: '5.4', desc: 'Player vs Player mode', expected: 'Matchmaking works' },
+                { id: '5.5', desc: 'Tournament/Challenge creation', expected: 'Can create competitions' },
+                { id: '5.6', desc: 'Tournament joining', expected: 'Users can join events' },
+                { id: '5.7', desc: 'Ranking algorithms', expected: 'Fair and accurate rankings' },
+                { id: '5.8', desc: 'Achievement system', expected: 'Badges/rewards awarded correctly' },
+                { id: '5.9', desc: 'Competition history', expected: 'Past results accessible' },
+                { id: '5.10', desc: 'Fair play mechanisms', expected: 'Anti-cheating measures work' }
+            ],
+            profile: [
+                { id: '6.1', desc: 'Profile creation', expected: 'Complete profile setup' },
+                { id: '6.2', desc: 'Profile editing', expected: 'Changes saved correctly' },
+                { id: '6.3', desc: 'Avatar/photo upload', expected: 'Images upload and display' },
+                { id: '6.4', desc: 'Progress dashboard', expected: 'Shows learning progress' },
+                { id: '6.5', desc: 'Statistics display', expected: 'Accurate stats shown' },
+                { id: '6.6', desc: 'Performance analytics', expected: 'Graphs/charts display data' },
+                { id: '6.7', desc: 'Learning streaks', expected: 'Tracks consecutive days' },
+                { id: '6.8', desc: 'Skill assessment', expected: 'Shows strengths/weaknesses' },
+                { id: '6.9', desc: 'Goal setting', expected: 'Users can set and track goals' },
+                { id: '6.10', desc: 'History/Activity log', expected: 'Shows past activities' }
+            ],
+            performance: [
+                { id: '7.1', desc: 'Page load time', expected: '< 3 seconds on average' },
+                { id: '7.2', desc: 'Game loading time', expected: '< 5 seconds' },
+                { id: '7.3', desc: 'API response time', expected: '< 2 seconds' },
+                { id: '7.4', desc: 'Concurrent users handling', expected: 'No lag with multiple users' },
+                { id: '7.5', desc: 'Memory usage', expected: 'No memory leaks' },
+                { id: '7.6', desc: 'CPU usage', expected: 'Reasonable resource consumption' },
+                { id: '7.7', desc: 'Caching mechanism', expected: 'Repeat visits load faster' },
+                { id: '7.8', desc: 'Image optimization', expected: 'Images compressed properly' },
+                { id: '7.9', desc: 'Code minification', expected: 'JS/CSS optimized' },
+                { id: '7.10', desc: 'Database queries', expected: 'Optimized query performance' }
+            ],
+            security: [
+                { id: '8.1', desc: 'HTTPS implementation', expected: 'All pages use HTTPS' },
+                { id: '8.2', desc: 'SQL injection prevention', expected: 'No vulnerabilities' },
+                { id: '8.3', desc: 'XSS prevention', expected: 'Scripts properly sanitized' },
+                { id: '8.4', desc: 'CSRF protection', expected: 'Tokens implemented' },
+                { id: '8.5', desc: 'Password encryption', expected: 'Passwords hashed properly' },
+                { id: '8.6', desc: 'Session security', expected: 'Secure session handling' },
+                { id: '8.7', desc: 'Data encryption', expected: 'Sensitive data encrypted' },
+                { id: '8.8', desc: 'Privacy policy', expected: 'Clearly stated and accessible' },
+                { id: '8.9', desc: 'Cookie consent', expected: 'GDPR compliant' },
+                { id: '8.10', desc: 'Data backup', expected: 'Regular backups functional' }
+            ]
+        };
+
+        function createTestRow(test) {
+            return `
+                <tr>
+                    <td><span class="test-id">${test.id}</span></td>
+                    <td>${test.desc}</td>
+                    <td>${test.expected}</td>
+                    <td>
+                        <div class="checkbox-group">
+                            <label class="checkbox-label pass">
+                                <input type="checkbox" data-test="${test.id}" data-status="pass"> Pass
+                            </label>
+                            <label class="checkbox-label fail">
+                                <input type="checkbox" data-test="${test.id}" data-status="fail"> Fail
+                            </label>
+                        </div>
+                    </td>
+                    <td><textarea rows="2" data-notes="${test.id}" placeholder="Add notes..."></textarea></td>
+                </tr>
+            `;
+        }
+
+        function populateTables() {
+            document.getElementById('auth-tests').innerHTML = testData.auth.map(createTestRow).join('');
+            document.getElementById('ui-tests').innerHTML = testData.ui.map(createTestRow).join('');
+            document.getElementById('game-tests').innerHTML = testData.game.map(createTestRow).join('');
+            document.getElementById('learning-tests').innerHTML = testData.learning.map(createTestRow).join('');
+            document.getElementById('competitive-tests').innerHTML = testData.competitive.map(createTestRow).join('');
+            document.getElementById('profile-tests').innerHTML = testData.profile.map(createTestRow).join('');
+            document.getElementById('performance-tests').innerHTML = testData.performance.map(createTestRow).join('');
+            document.getElementById('security-tests').innerHTML = testData.security.map(createTestRow).join('');
+        }
+
+        // Auto-exclusive checkbox behavior
+        document.addEventListener('change', function(e) {
+            if (e.target.type === 'checkbox' && e.target.dataset.test) {
+                const testId = e.target.dataset.test;
+                const status = e.target.dataset.status;
+                const otherStatus = status === 'pass' ? 'fail' : 'pass';
+                const otherCheckbox = document.querySelector(`input[data-test="${testId}"][data-status="${otherStatus}"]`);
+                
+                if (e.target.checked && otherCheckbox) {
+                    otherCheckbox.checked = false;
+                }
+            }
+        });
+
+        function saveData() {
+            const data = {
+                metadata: {
+                    platformName: document.getElementById('platformName').value,
+                    version: document.getElementById('version').value,
+                    testingDate: document.getElementById('testingDate').value,
+                    testerName: document.getElementById('testerName').value,
+                    browser: document.getElementById('browser').value,
+                    osDevice: document.getElementById('osDevice').value
+                },
+                tests: {},
+                ratings: {},
+                textareas: {}
+            };
+
+            // Save all checkboxes
+            document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+                if (cb.dataset.test) {
+                    const key = `${cb.dataset.test}-${cb.dataset.status}`;
+                    data.tests[key] = cb.checked;
+                }
+            });
+
+            // Save all radio buttons
+            document.querySelectorAll('input[type="radio"]').forEach(radio => {
+                if (radio.checked) {
+                    data.ratings[radio.name] = radio.value;
+                }
+            });
+
+            // Save all textareas
+            document.querySelectorAll('textarea').forEach(textarea => {
+                const key = textarea.dataset.notes || textarea.placeholder;
+                data.textareas[key] = textarea.value;
+            });
+
+            // Save all text inputs in bugs table
+            document.querySelectorAll('.bugs-table input[type="text"]').forEach((input, idx) => {
+                data.textareas[`bug-input-${idx}`] = input.value;
+            });
+
+            localStorage.setItem('qaTestingData', JSON.stringify(data));
+            showToast('Data saved successfully!');
+        }
+
+        function loadData() {
+            const saved = localStorage.getItem('qaTestingData');
+            if (!saved) return;
+
+            const data = JSON.parse(saved);
+
+            // Load metadata
+            if (data.metadata) {
+                Object.keys(data.metadata).forEach(key => {
+                    const el = document.getElementById(key);
+                    if (el) el.value = data.metadata[key];
+                });
+            }
+
+            // Load checkboxes
+            if (data.tests) {
+                Object.keys(data.tests).forEach(key => {
+                    const [testId, status] = key.split('-');
+                    const cb = document.querySelector(`input[data-test="${testId}"][data-status="${status}"]`);
+                    if (cb) cb.checked = data.tests[key];
+                });
+            }
+
+            // Load radio buttons
+            if (data.ratings) {
+                Object.keys(data.ratings).forEach(name => {
+                    const radio = document.querySelector(`input[name="${name}"][value="${data.ratings[name]}"]`);
+                    if (radio) radio.checked = true;
+                });
+            }
+
+            // Load textareas
+            if (data.textareas) {
+                Object.keys(data.textareas).forEach(key => {
+                    const textarea = document.querySelector(`textarea[data-notes="${key}"]`) ||
+                                   document.querySelector(`textarea[placeholder="${key}"]`);
+                    if (textarea) textarea.value = data.textareas[key];
+                });
+
+                // Load bug inputs
+                const bugInputs = document.querySelectorAll('.bugs-table input[type="text"]');
+                bugInputs.forEach((input, idx) => {
+                    const value = data.textareas[`bug-input-${idx}`];
+                    if (value) input.value = value;
+                });
+            }
+        }
+
+        function exportToJSON() {
+            const data = {
+                metadata: {
+                    platformName: document.getElementById('platformName').value,
+                    version: document.getElementById('version').value,
+                    testingDate: document.getElementById('testingDate').value,
+                    testerName: document.getElementById('testerName').value,
+                    browser: document.getElementById('browser').value,
+                    osDevice: document.getElementById('osDevice').value
+                },
+                sections: {}
+            };
+
+            // Collect all test results
+            ['auth', 'ui', 'game', 'learning', 'competitive', 'profile', 'performance', 'security'].forEach(section => {
+                data.sections[section] = {
+                    tests: [],
+                    rating: document.querySelector(`input[name="${section}-rating"]:checked`)?.value || null
+                };
+
+                testData[section].forEach(test => {
+                    const passCheckbox = document.querySelector(`input[data-test="${test.id}"][data-status="pass"]`);
+                    const failCheckbox = document.querySelector(`input[data-test="${test.id}"][data-status="fail"]`);
+                    const notes = document.querySelector(`textarea[data-notes="${test.id}"]`)?.value || '';
+
+                    data.sections[section].tests.push({
+                        id: test.id,
+                        description: test.desc,
+                        expected: test.expected,
+                        status: passCheckbox?.checked ? 'pass' : (failCheckbox?.checked ? 'fail' : 'not tested'),
+                        notes: notes
+                    });
+                });
+            });
+
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `qa-testing-${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('Exported successfully!');
+        }
+
+        function clearAll() {
+            if (confirm('Are you sure you want to clear all data? This cannot be undone.')) {
+                localStorage.removeItem('qaTestingData');
+                location.reload();
+            }
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        // Auto-save every 30 seconds
+        setInterval(saveData, 30000);
+
+        // Load data on page load
+        window.addEventListener('load', () => {
+            populateTables();
+            loadData();
+            document.getElementById('testingDate').valueAsDate = new Date();
+        });
+
+        // Save before leaving
+        window.addEventListener('beforeunload', saveData);
+    </script>
+</body>
+</html>
