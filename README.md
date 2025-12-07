@@ -349,6 +349,8 @@ npm run build
 - Input validation
 - Password hashing (bcrypt)
 
+**⚠️ IMPORTANT**: See [SECURITY.md](SECURITY.md) for production deployment security checklist and best practices.
+
 ## 🤝 Contributing
 
 We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
