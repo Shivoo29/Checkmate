@@ -1,0 +1,34 @@
+{
+  "name": "checkmate-bot-engine",
+  "version": "1.0.0",
+  "description": "Playwright-based bot testing engine for Checkmate QA Platform",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "ts-node src/index.ts",
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:debug": "playwright test --debug",
+    "install-browsers": "playwright install"
+  },
+  "keywords": [
+    "qa",
+    "testing",
+    "playwright",
+    "automation"
+  ],
+  "author": "Checkmate Team",
+  "license": "MIT",
+  "dependencies": {
+    "@playwright/test": "^1.41.0",
+    "axios": "^1.6.5",
+    "lighthouse": "^11.4.0",
+    "@axe-core/playwright": "^4.8.3"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.5",
+    "typescript": "^5.3.3",
+    "ts-node": "^10.9.2"
+  }
+}
